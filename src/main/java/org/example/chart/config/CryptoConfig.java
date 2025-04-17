@@ -33,8 +33,11 @@ public class CryptoConfig {
     @Bean
     public KeyPairGenerator ntruKeyPairGenerator(BouncyCastleProvider provider)
             throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+        // 获取 NTRU 算法的密钥对生成器，指定使用 Bouncy Castle 作为提供者（provider）
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("NTRU", "BC");
-        keyPairGenerator.initialize(NTRUParameterSpec.ntruhps2048509); // 使用推荐的参数集
+        // 使用推荐的参数集 ntruHPS2048509 初始化密钥对生成器
+        keyPairGenerator.initialize(NTRUParameterSpec.ntruhps2048509);
+        // 返回初始化后的密钥对生成器实例
         return keyPairGenerator;
     }
 

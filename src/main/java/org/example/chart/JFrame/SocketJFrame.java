@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 
 /**
@@ -28,7 +31,13 @@ public class SocketJFrame extends JFrame implements ActionListener {
     }
     public void initJButton(){
         login.setBounds(100,90,80,30);
-        login.addActionListener(this::loginAction);//添加监听事件
+        login.addActionListener(e -> {
+            try {
+                loginAction(e);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });//添加监听事件
         container.add(login);
     }
     public void initView(){
@@ -73,7 +82,7 @@ public class SocketJFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
     }
-    public void loginAction(ActionEvent e){//登录
+    public void loginAction(ActionEvent e) throws Exception {//登录
         System.out.println("登录");
         this.setVisible(false);
         //启动聊天界面

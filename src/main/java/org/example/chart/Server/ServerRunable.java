@@ -26,7 +26,7 @@ public class ServerRunable implements Runnable {
             try {
                 BufferedReader br=new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String str=br.readLine();
-                System.out.println(str);
+                System.out.println("服务端收到的消息："+str);
                 for (Socket socket1 : sockets) {//反馈给每一个客户端
                     BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(socket1.getOutputStream()));
                     bw.write(str);

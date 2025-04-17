@@ -21,7 +21,7 @@ public class MainJFrame extends JFrame implements ActionListener {
     String name;//用户名
     JTextArea jTextArea;//文本显示框
     MySocket s;//当登录成功后创建客户端对象
-    public MainJFrame(String name,JTextArea jTextArea) {
+    public MainJFrame(String name,JTextArea jTextArea) throws Exception {
         this.name=name;
         this.jTextArea=jTextArea;
         s=new MySocket(name);
@@ -62,6 +62,6 @@ public class MainJFrame extends JFrame implements ActionListener {
         String str=name+":"+news.getText();
         s.talk(s.socket,str);
         news.setText("");
-        System.out.println(str);
+//        System.out.println(str);
     }
 }
