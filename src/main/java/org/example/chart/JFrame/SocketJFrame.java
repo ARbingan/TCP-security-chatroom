@@ -4,10 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
 
 /**
  * 登录界面
@@ -83,7 +79,7 @@ public class SocketJFrame extends JFrame implements ActionListener {
 
     }
     public void loginAction(ActionEvent e) throws Exception {//登录
-        System.out.println("登录");
+//        System.out.println("登录");
         this.setVisible(false);
         //启动聊天界面
         MainJFrame mj=new MainJFrame(jTextField.getText(),jTextArea);

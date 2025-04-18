@@ -1,7 +1,5 @@
 package org.example.chart.JFrame;
 
-
-
 import org.example.chart.Socket.MySocket;
 
 import javax.swing.*;
@@ -60,8 +58,11 @@ public class MainJFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         //点击发送，将输入框中的内容发送给服务器,然后服务器反馈
         String str=name+":"+news.getText();
-        s.talk(s.socket,str);
+        try {
+            s.talk(s.socket,str);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
         news.setText("");
-//        System.out.println(str);
     }
 }

@@ -3,6 +3,7 @@ package org.example.chart.config;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.pqc.jcajce.spec.NTRUParameterSpec;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import javax.crypto.Cipher;
@@ -15,6 +16,7 @@ import java.security.*;
  */
 
 @Configuration
+
 public class CryptoConfig {
 
     /**

@@ -1,7 +1,5 @@
 package org.example.chart.Socket;
 
-
-
 import org.example.chart.JFrame.SocketJFrame;
 
 import java.io.BufferedReader;
@@ -33,7 +31,7 @@ class SocketRunable implements Runnable{
                 String str=br.readLine();
                 //将反馈的信息打印到文本框中
                 SocketJFrame.jTextArea.append(str+"\r\n");
-                System.out.println(str);
+//                System.out.println(str);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
