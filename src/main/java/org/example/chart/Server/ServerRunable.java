@@ -46,6 +46,7 @@ public class ServerRunable implements Runnable {
         // 接收客户端发送的消息，并反馈
         while (true) {
             try {
+
                 // 1. 接收数据
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
