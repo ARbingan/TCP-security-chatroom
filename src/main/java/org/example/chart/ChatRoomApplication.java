@@ -11,15 +11,17 @@ import javax.crypto.SecretKey;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Arrays;
+
 
 @SpringBootApplication
+
 public class ChatRoomApplication {
     //记录连接的客户端
-    public static ArrayList<Socket> sockets = new ArrayList<>();
+    public static ArrayList<ServerRunable>  serverRunables= new ArrayList<>();
     public static void main(String[] args) throws Exception {
         //服务端
         ServerSocket ss = new ServerSocket(9090);
@@ -59,6 +61,18 @@ public class ChatRoomApplication {
             byte[] encryptedData = new byte[encryptedDataLength];
             // 2. 接收加密数据
             dis.readFully(encryptedData);
+            // 1. 接收数据
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+            String payload = br.readLine();
+            // 2. 分割IV和加密数据
+            String[] parts = payload.split("\\|");
+            if (parts.length != 2) {
+                throw new IllegalArgumentException("数据错误");
+            }
+            String  name =parts[0];
+            String receiver = parts[1];
+            String name_receiver=name+"_"+receiver;
             // 3. 使用NTRU私钥解密数据
             Cipher cipher = Cipher.getInstance("NTRU", "BC");
             cipher.init(Cipher.UNWRAP_MODE, ntruprivateKey);
@@ -72,8 +86,12 @@ public class ChatRoomApplication {
             String sm4KeyBase64 = Base64.getEncoder().encodeToString(decryptedKeyBytes);
             System.out.println("收到客户端的SM4密钥-解密后: " + sm4KeyBase64);
             System.out.println("========================================================");
-            sockets.add(socket);
-            new Thread(new ServerRunable(socket, sockets,decryptedKey)).start();
+//            sockets.add(socket);
+
+            ServerRunable serverRunable = new ServerRunable(socket, serverRunables, decryptedKey, name, receiver);
+            serverRunables.add(serverRunable);
+//            serverRunable;
+            new Thread(serverRunable,name).start();
         }
     }
 }

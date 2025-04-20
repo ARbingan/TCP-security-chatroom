@@ -17,12 +17,14 @@ public class MainJFrame extends JFrame implements ActionListener {
     JTextField news=new JTextField();//信息输入框
     JButton sendsJButton=new JButton("发送");
     String name;//用户名
+    String receiver;
     JTextArea jTextArea;//文本显示框
     MySocket s;//当登录成功后创建客户端对象
-    public MainJFrame(String name,JTextArea jTextArea) throws Exception {
+    public MainJFrame(String name,String receiver,JTextArea jTextArea) throws Exception {
         this.name=name;
+        this.receiver=receiver;
         this.jTextArea=jTextArea;
-        s=new MySocket(name);
+        s=new MySocket(name,receiver);
         initJFrame();
         initView();
         this.setVisible(true);
@@ -59,7 +61,7 @@ public class MainJFrame extends JFrame implements ActionListener {
         //点击发送，将输入框中的内容发送给服务器,然后服务器反馈
         String str=name+":"+news.getText();
         try {
-            s.talk(s.socket,str);
+            s.talk(s.socket,str,name,receiver);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
