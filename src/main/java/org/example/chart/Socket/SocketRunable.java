@@ -41,7 +41,7 @@ class SocketRunable implements Runnable {
                 BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
                 String payload = br.readLine();
 
-                // 2. 分割IV和加密数据
+                //分割IV和加密数据
                 String[] parts = payload.split("\\|");
                 if (parts.length != 2) {
                     throw new IllegalArgumentException("数据错误");
@@ -52,24 +52,24 @@ class SocketRunable implements Runnable {
                 String base64iv = Base64.getEncoder().encodeToString(iv);
                 String base64message = Base64.getEncoder().encodeToString(message);
 
-                System.out.println("接收端收到的加密iv:" + base64iv);
-                System.out.println("接收端收到的加密base64message:" + base64message);
+                System.out.println("接收方收到的加密iv:" + base64iv);
+                System.out.println("接收方收到的加密base64message:" + base64message);
                 String encodedKey = Base64.getEncoder().encodeToString(sm4secretKey.getEncoded());
-                System.out.println("解密使用的SM4:" + encodedKey);
-                // 3. 初始化解密器
+                System.out.println("接收方解密使用的SM4:" + encodedKey);
+                //初始化解密器
                 Cipher cipher = Cipher.getInstance("SM4", "BC");
                 cipher.init(Cipher.DECRYPT_MODE, sm4secretKey, new IvParameterSpec(iv));
-                // 4. 解密数据
+                //解密数据
                 byte[] messageData = cipher.doFinal(message); // 直接对message字节数组进行解密
                 String messagestr = new String(messageData, StandardCharsets.UTF_8);
-                System.out.println("服务端收到的消息-解密后：" + messagestr);
+                System.out.println("接收方收到的消息-解密后：" + messagestr);
                 System.out.println("========================================================");
 
                 //将反馈的信息打印到文本框中
                 SocketJFrame.jTextArea.append(messagestr + "\r\n");
                 // System.out.println(str);
             } catch (Exception e) {
-                e.printStackTrace(); // 打印异常信息，方便调试
+                e.printStackTrace();
             }
         }
     }

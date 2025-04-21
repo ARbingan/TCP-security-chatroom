@@ -14,13 +14,13 @@ import java.awt.event.ActionListener;
 public class SocketJFrame extends JFrame implements ActionListener {
     public Container container = null;
     JTextField jTextField = new JTextField();// 文本输入框（用户名）
-    JTextField receiverTextField = new JTextField();// 新增的文本输入框（密码）
+    JTextField receiverTextField = new JTextField();// 新增的文本输入框（接收方）
     JButton login = new JButton("登录");
     public static JTextArea jTextArea = new JTextArea();// 聊天界面文本显示框
 
     public SocketJFrame() {
         // 设置图标
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage("TalkWirhMyFriend\\src\\image\\坤坤.jpg"));
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(""));
         // 初始化界面
         initJFrame();
         // 初始化组件
@@ -48,22 +48,18 @@ public class SocketJFrame extends JFrame implements ActionListener {
         code.setFont(codeFont);
         code.setBackground(Color.BLACK);
         container.add(code);
-
         // 设置用户名输入框
-        jTextField.setBounds(90, 50, 150, 30);
+        jTextField.setBounds(90, 50, 120, 30);
         container.add(jTextField);
-
-        // 设置密码标签
+        // 设置接收方标签
         JLabel receiverLabel = new JLabel("接收人");
         receiverLabel.setBounds(90, 80, 100, 40);
         receiverLabel.setFont(codeFont);
         receiverLabel.setBackground(Color.BLACK);
         container.add(receiverLabel);
-
         // 设置密码输入框
-        receiverTextField.setBounds(90, 110, 150, 30);
+        receiverTextField.setBounds(90, 110, 120, 30);
         container.add(receiverTextField);
-
         // 按钮
         initJButton();
     }

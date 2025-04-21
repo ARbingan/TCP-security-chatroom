@@ -17,7 +17,7 @@ public class MainJFrame extends JFrame implements ActionListener {
     JTextField news=new JTextField();//信息输入框
     JButton sendsJButton=new JButton("发送");
     String name;//用户名
-    String receiver;
+    String receiver;//接收方
     JTextArea jTextArea;//文本显示框
     MySocket s;//当登录成功后创建客户端对象
     public MainJFrame(String name,String receiver,JTextArea jTextArea) throws Exception {
@@ -39,7 +39,7 @@ public class MainJFrame extends JFrame implements ActionListener {
         container.add(sendsJButton);
     }
     public void initJFrame() {
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage("TalkWirhMyFriend\\src\\image\\坤坤.jpg"));
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(""));
         this.setSize(600, 500);
         this.setTitle("聊天室");
         this.setDefaultCloseOperation(3);
@@ -51,7 +51,7 @@ public class MainJFrame extends JFrame implements ActionListener {
 //        initBackground();//添加背景图片
     }
     public void initBackground(){//添加背景图片
-        ImageIcon background=new ImageIcon("JFrame_Game\\Jframe_knowledge\\src\\image\\坤坤.jpg");
+        ImageIcon background=new ImageIcon("");
         JLabel jLabel=new JLabel(background);
         jLabel.setBounds(-80,0,800,800);
         container.add(jLabel);

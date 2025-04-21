@@ -22,15 +22,14 @@ import java.util.Objects;
  * 服务端要将信息反馈给每一个客户端
  * 服务端的作用就是用来接受客户端发送的信息并进行反馈
  * 服务端只有一个，需要不断的等待客户端来连接，对于每一个客户端都要单独开出一条线程进行处理。
- * 当ServerSocket进行反馈时，我们需要反馈给每一个客户端，因此我们需要一个集合用来存储已经连接的Socket
+ * 当ServerSocket进行反馈时，需要反馈给对应名字的用户，因此我们需要一个集合用来存储已经连接的Socket、用户名和对应的SM4密钥
  */
 public class ServerRunable implements Runnable {
     Socket socket; // 连接处理的Socket
-    String name;
-    String receiver;
-    ArrayList<ServerRunable> ServerRunables;
-    // 客户端对应的SM4密钥
-    SecretKey decryptedKey;
+    String name;//用户名
+    String receiver;//接收方用户名
+    ArrayList<ServerRunable> ServerRunables;//存放所有的用户对应的ServerRunable
+    SecretKey decryptedKey;// 此用户的SM4密钥
 
     public ServerRunable(Socket socket, ArrayList<ServerRunable> ServerRunables, SecretKey decryptedKey, String name, String receiver) {
         this.socket = socket;
@@ -42,16 +41,15 @@ public class ServerRunable implements Runnable {
 
     @Override
     public void run() {
-        Security.addProvider(new BouncyCastleProvider());
+        Security.addProvider(new BouncyCastleProvider());//注册加密库
         // 接收客户端发送的消息，并反馈
         while (true) {
             try {
-
-                // 1. 接收数据
+                //接收数据-接收对应客户端的数据
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
                 String payload = br.readLine();
-                // 2. 分割IV和加密数据
+                //分割IV和加密数据
                 String[] parts = payload.split("\\|");
                 if (parts.length != 2) {
                     throw new IllegalArgumentException("数据错误");
@@ -61,27 +59,24 @@ public class ServerRunable implements Runnable {
 
                 String base64iv = Base64.getEncoder().encodeToString(iv);
                 String base64message = Base64.getEncoder().encodeToString(message);
-
+                String encodedKey = Base64.getEncoder().encodeToString(decryptedKey.getEncoded());
                 System.out.println("服务端收到的加密iv:" + base64iv);
                 System.out.println("服务端收到的加密base64message:" + base64message);
-
-                String encodedKey = Base64.getEncoder().encodeToString(decryptedKey.getEncoded());
                 System.out.println("服务端解密使用的SM4:" + encodedKey);
 
                 Cipher cipher = Cipher.getInstance("SM4", "BC");
                 cipher.init(Cipher.DECRYPT_MODE, decryptedKey, new IvParameterSpec(iv));
-                // 4. 解密数据
+                //解密数据
                 byte[] messageData = cipher.doFinal(message);
                 String messagestr = new String(messageData, StandardCharsets.UTF_8);
                 System.out.println("服务端收到的消息-解密后：" + messagestr);
                 System.out.println("========================================================");
 
                 for (ServerRunable serverRunable : ServerRunables) {
-                    // 反馈给每一个客户端
+                    // 反馈给对应的客户端-转发给发送方和接收方
                     if (Objects.equals(serverRunable.name, receiver)
                             ||Objects.equals(serverRunable.name, name)) {
-                        // TODO 加密messagestr，使用接收方的密钥
-                        // 1. 生成随机IV (Initialization Vector)
+                        //生成随机IV (Initialization Vector)
                         IvParameterSpec ivSpec = new IvParameterSpec(iv);
 
                         Cipher cipher1 = Cipher.getInstance("SM4", "BC");
@@ -93,14 +88,12 @@ public class ServerRunable implements Runnable {
                         byte[] encryptedData = cipher1.doFinal(messagestr.getBytes(StandardCharsets.UTF_8));
                         String ivBase64 = Base64.getEncoder().encodeToString(iv);
                         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedData);
-                        System.out.println(name + "：客户端发送的加密iv：" + ivBase64);
-                        System.out.println(name + "：客户端发送的加密字符串：" + encryptedDataBase64);
-
+                        System.out.println(name + "：服务端转发的加密iv：" + ivBase64);
+                        System.out.println(name + "：服务端转发的加密字符串：" + encryptedDataBase64);
                         String payload1 = ivBase64 + "|" + encryptedDataBase64;
 
-                        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(serverRunable.socket.getOutputStream(), StandardCharsets.UTF_8));
-//                        bw.write(payload1);
-//                        new OutputStreamWriter(serverRunable.socket.getOutputStream(), StandardCharsets.UTF_8)
+                        BufferedWriter bw = new BufferedWriter(
+                                new OutputStreamWriter(serverRunable.socket.getOutputStream(), StandardCharsets.UTF_8));
                         bw.write(payload1);
                         bw.newLine();
                         bw.flush();
